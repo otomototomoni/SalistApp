@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        fetchQiitaArticle()
-        fetchZennArticle()
+        fetchQiitaArticle("")
+        fetchZennArticle("")
     }
 
     fun updateArticleList() {
@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun fetchQiitaArticle() {
-        fetchArticle("https://qiita.com/api/v2/items") { response, error ->
+    fun fetchQiitaArticle(keyword: String = "") {
+        fetchArticle("https://qiita.com/api/v2/items?query=$keyword") { response, error ->
             if (response != null) {
                 // `response`をJSON配列としてパース
                 val jsonArray = JSONArray(response)
@@ -57,8 +57,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun fetchZennArticle() {
-        fetchArticle("https://zenn.dev/api/articles") { response, error ->
+    fun fetchZennArticle(keyword: String = "") {
+        fetchArticle("https://zenn.dev/api/search?source=articles&q=$keyword") { response, error ->
             if (response != null) {
                 // `response`をJSON配列としてパース
                 val jsonObject = JSONObject(response)
