@@ -37,7 +37,13 @@ class MainActivity : AppCompatActivity() {
 
 
     fun fetchQiitaArticle(keyword: String = "") {
-        fetchArticle("https://qiita.com/api/v2/items?query=$keyword") { response, error ->
+        var apiURL = "https://qiita.com/api/v2/items"
+        if(keyword != "") {
+            apiURL = "https://qiita.com/api/v2/items?query=$keyword"
+        }
+
+
+        fetchArticle(apiURL) { response, error ->
             if (response != null) {
                 // `response`をJSON配列としてパース
                 val jsonArray = JSONArray(response)
@@ -58,7 +64,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun fetchZennArticle(keyword: String = "") {
-        fetchArticle("https://zenn.dev/api/search?source=articles&q=$keyword") { response, error ->
+        var apiURL = "https://zenn.dev/api/articles"
+        if(keyword != "") {
+            apiURL = "https://zenn.dev/api/search?source=articles&q=$keyword"
+        }
+        fetchArticle(apiURL) { response, error ->
             if (response != null) {
                 // `response`をJSON配列としてパース
                 val jsonObject = JSONObject(response)
