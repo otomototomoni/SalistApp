@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SalistApp</string>
+    <string name="navigation_drawer_open">メニューを開く</string>
+    <string name="navigation_drawer_close">メニューを閉じる</string>
 </resources>
