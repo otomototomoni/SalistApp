@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        fetchQiitaArticle()
-        fetchZennArticle()
+        fetchQiitaArticle("")
+        fetchZennArticle("")
     }
 
     fun updateArticleList() {
@@ -36,8 +36,14 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun fetchQiitaArticle() {
-        fetchArticle("https://qiita.com/api/v2/items") { response, error ->
+    fun fetchQiitaArticle(keyword: String = "") {
+        var apiURL = "https://qiita.com/api/v2/items"
+        if(keyword != "") {
+            apiURL = "https://qiita.com/api/v2/items?query=$keyword"
+        }
+
+
+        fetchArticle(apiURL) { response, error ->
             if (response != null) {
                 // `response`をJSON配列としてパース
                 val jsonArray = JSONArray(response)
@@ -57,8 +63,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun fetchZennArticle() {
-        fetchArticle("https://zenn.dev/api/articles") { response, error ->
+    fun fetchZennArticle(keyword: String = "") {
+        var apiURL = "https://zenn.dev/api/articles"
+        if(keyword != "") {
+            apiURL = "https://zenn.dev/api/search?source=articles&q=$keyword"
+        }
+        fetchArticle(apiURL) { response, error ->
             if (response != null) {
                 // `response`をJSON配列としてパース
                 val jsonObject = JSONObject(response)
