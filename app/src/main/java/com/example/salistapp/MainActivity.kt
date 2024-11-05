@@ -27,6 +27,16 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        fetchQiitaArticle()
+        fetchZennArticle()
+    }
+
+    fun updateArticleList() {
+        println(articles)
+    }
+
+
+    fun fetchQiitaArticle() {
         fetchArticle("https://qiita.com/api/v2/items") { response, error ->
             if (response != null) {
                 // `response`をJSON配列としてパース
@@ -36,16 +46,39 @@ class MainActivity : AppCompatActivity() {
                     val articleJsonObject: JSONObject = jsonArray.getJSONObject(i)
                     val title = articleJsonObject.getString("title")
                     val url = articleJsonObject.getString("url")
-                    val article = Atricle(title, url);
+                    val article = Atricle(title, url, "Qiita");
                     articles.add(article);
                 }
 
             } else {
                 println("No response received")
             }
-            println(articles)
+            updateArticleList()
         }
     }
+
+    fun fetchZennArticle() {
+        fetchArticle("https://zenn.dev/api/articles") { response, error ->
+            if (response != null) {
+                // `response`をJSON配列としてパース
+                val jsonObject = JSONObject(response)
+                val articlesArray = jsonObject.getJSONArray("articles")
+
+                for (i in 0 until articlesArray.length()) {
+                    val articleJsonObject: JSONObject = articlesArray.getJSONObject(i)
+                    val title = articleJsonObject.getString("title")
+                    val url = "https://zenn.dev" + articleJsonObject.getString("path")
+                    val article = Atricle(title, url, "Zenn");
+                    articles.add(article);
+                }
+
+            } else {
+                println("No response received")
+            }
+            updateArticleList()
+        }
+    }
+
 
     fun fetchArticle(url: String, callback: (String?, Exception?) -> Unit) {
         val apiClient = ApiClient()
@@ -94,13 +127,15 @@ class ApiClient {
     }
 }
 
-class Atricle(title: String, url: String) {
+class Atricle(title: String, url: String, media: String) {
     private var title = "";
     private var url = "";
+    private var media = "";
 
     init {
         this.title = title;
         this.url = url;
+        this.media = media;
     }
 
     fun getTitle(): String {
@@ -108,5 +143,8 @@ class Atricle(title: String, url: String) {
     }
     fun getUrl(): String {
         return this.url;
+    }
+    fun getMedia(): String {
+        return this.media;
     }
 }
