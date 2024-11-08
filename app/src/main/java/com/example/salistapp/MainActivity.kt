@@ -1,6 +1,14 @@
 package com.example.salistapp
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ListView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,95 +19,100 @@ import org.json.JSONObject
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
-    var articles = ArrayList<Atricle>()
+    private lateinit var listView: ListView
+    private var articles = ArrayList<Article>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        listView = findViewById(R.id.list_view)
     }
 
     override fun onStart() {
         super.onStart()
-
+        articles.clear()
         fetchQiitaArticle("")
         fetchZennArticle("")
     }
 
     fun updateArticleList() {
-        println(articles)
-    }
+        val adapter = object : ArrayAdapter<Article>(this, R.layout.item_article, articles) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val article = getItem(position)!!
+                val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_article, parent, false)
 
+                // アイコン、タイトル、サイト名を設定
+                val iconView: ImageView = view.findViewById(R.id.article_icon)
+                val mediaView: TextView = view.findViewById(R.id.article_media)
+                val titleView: TextView = view.findViewById(R.id.article_title)
+                val favoriteButton: ImageButton = view.findViewById(R.id.favorite_button)
 
-    fun fetchQiitaArticle(keyword: String = "") {
-        var apiURL = "https://qiita.com/api/v2/items"
-        if(keyword != "") {
-            apiURL = "https://qiita.com/api/v2/items?query=$keyword"
-        }
+                // アイコンを設定（仮にアイコン無しとしている）
+                iconView.setImageResource(R.drawable.ic_launcher_foreground)
 
+                mediaView.text = article.getMedia()
+                titleView.text = article.getTitle()
 
-        fetchArticle(apiURL) { response, error ->
-            if (response != null) {
-                // `response`をJSON配列としてパース
-                val jsonArray = JSONArray(response)
-
-                for (i in 0 until jsonArray.length()) {
-                    val articleJsonObject: JSONObject = jsonArray.getJSONObject(i)
-                    val title = articleJsonObject.getString("title")
-                    val url = articleJsonObject.getString("url")
-                    val article = Atricle(title, url, "Qiita");
-                    articles.add(article);
+                // お気に入りボタンのクリックイベント
+                favoriteButton.setOnClickListener {
+                    // ここでお気に入り処理を追加
                 }
 
-            } else {
-                println("No response received")
+                return view
             }
-            updateArticleList()
         }
+
+        runOnUiThread {
+            listView.adapter = adapter
+        }
+    }
+
+    fun fetchQiitaArticle(keyword: String = "") {
+        val apiURL = if (keyword.isNotEmpty()) "https://qiita.com/api/v2/items?query=$keyword" else "https://qiita.com/api/v2/items"
+        fetchArticle(apiURL)
     }
 
     fun fetchZennArticle(keyword: String = "") {
-        var apiURL = "https://zenn.dev/api/articles"
-        if(keyword != "") {
-            apiURL = "https://zenn.dev/api/search?source=articles&q=$keyword"
-        }
-        fetchArticle(apiURL) { response, error ->
-            if (response != null) {
-                // `response`をJSON配列としてパース
-                val jsonObject = JSONObject(response)
-                val articlesArray = jsonObject.getJSONArray("articles")
-
-                for (i in 0 until articlesArray.length()) {
-                    val articleJsonObject: JSONObject = articlesArray.getJSONObject(i)
-                    val title = articleJsonObject.getString("title")
-                    val url = "https://zenn.dev" + articleJsonObject.getString("path")
-                    val article = Atricle(title, url, "Zenn");
-                    articles.add(article);
-                }
-
-            } else {
-                println("No response received")
-            }
-            updateArticleList()
-        }
+        val apiURL = if (keyword.isNotEmpty()) "https://zenn.dev/api/search?source=articles&q=$keyword" else "https://zenn.dev/api/articles"
+        fetchArticle(apiURL)
     }
 
-
-    fun fetchArticle(url: String, callback: (String?, Exception?) -> Unit) {
+    fun fetchArticle(url: String) {
         val apiClient = ApiClient()
-
         apiClient.sendGetRequest(url) { response, error ->
-            if (error != null) {
-                println("Error: ${error.message}")
-                callback(null, error)
+            if (response != null) {
+                // QiitaまたはZennの記事のレスポンスを処理
+                if (url.contains("qiita")) {
+                    val jsonArray = JSONArray(response)
+                    for (i in 0 until jsonArray.length()) {
+                        val articleJsonObject: JSONObject = jsonArray.getJSONObject(i)
+                        val title = articleJsonObject.getString("title")
+                        val url = articleJsonObject.getString("url")
+                        val article = Article(title, url, "Qiita")
+                        articles.add(article)
+                    }
+                } else if (url.contains("zenn")) {
+                    val jsonObject = JSONObject(response)
+                    val articlesArray = jsonObject.getJSONArray("articles")
+                    for (i in 0 until articlesArray.length()) {
+                        val articleJsonObject: JSONObject = articlesArray.getJSONObject(i)
+                        val title = articleJsonObject.getString("title")
+                        val url = "https://zenn.dev" + articleJsonObject.getString("path")
+                        val article = Article(title, url, "Zenn")
+                        articles.add(article)
+                    }
+                }
+                updateArticleList()
             } else {
-                println("Response: $response")
-                callback(response, null)
+                println("No response received")
             }
         }
     }
@@ -111,20 +124,16 @@ class ApiClient {
 
     // GETリクエストを送信する関数
     fun sendGetRequest(url: String, callback: (String?, Exception?) -> Unit) {
-        // リクエストの作成
         val request = Request.Builder()
             .url(url)
             .build()
 
-        // 非同期でリクエストを実行
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                // エラー時の処理
                 callback(null, e)
             }
 
             override fun onResponse(call: Call, response: Response) {
-                // レスポンスが成功したときの処理
                 if (response.isSuccessful) {
                     response.body?.string()?.let { responseBody ->
                         callback(responseBody, null)
@@ -137,24 +146,8 @@ class ApiClient {
     }
 }
 
-class Atricle(title: String, url: String, media: String) {
-    private var title = "";
-    private var url = "";
-    private var media = "";
-
-    init {
-        this.title = title;
-        this.url = url;
-        this.media = media;
-    }
-
-    fun getTitle(): String {
-        return this.title;
-    }
-    fun getUrl(): String {
-        return this.url;
-    }
-    fun getMedia(): String {
-        return this.media;
-    }
+class Article(private val title: String, private val url: String, private val media: String) {
+    fun getTitle(): String = title
+    fun getUrl(): String = url
+    fun getMedia(): String = media
 }

@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">SalistApp</string>
-    <string name="navigation_drawer_open">メニューを開く</string>
-    <string name="navigation_drawer_close">メニューを閉じる</string>
+    <string name="app_name">Your App Name</string>
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
+    <string name="favorite_button">お気に入り</string>
 </resources>

@@ -3,9 +3,15 @@
         android:id="@+id/nav_home"
         android:title="ホーム" />
     <item
-        android:id="@+id/nav_blog"
-        android:title="ブログ一覧" />
+        android:id="@+id/nav_favorite"
+        android:title="お気に入り" />
+    <item
+        android:id="@+id/nav_log"
+        android:title="履歴" />
     <item
         android:id="@+id/nav_settings"
         android:title="設定" />
+    <item
+        android:id="@+id/nav_help"
+        android:title="ヘルプとフィードバック" />
 </menu>
