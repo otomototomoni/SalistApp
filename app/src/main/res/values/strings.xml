@@ -3,4 +3,5 @@
     <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>
     <string name="favorite_button">お気に入り</string>
+    <string name="icon_description">記事のアイコン</string>
 </resources>
