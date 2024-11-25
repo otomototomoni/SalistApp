@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:padding="50dp"
             android:background="@android:color/darker_gray"
-            android:text="広告欄"
+            android:text="広告募集中"
             android:textColor="@android:color/black"
             android:gravity="center"
             android:layout_marginTop="16dp" />
