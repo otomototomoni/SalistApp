@@ -101,9 +101,17 @@ class MainActivity : AppCompatActivity() {
                 mediaView.text = article.getMedia()
                 titleView.text = article.getTitle()
 
+                // viewのクリック
+                view.setOnClickListener {
+                    val intent = Intent(this@MainActivity, WebViewPage::class.java)
+                    intent.putExtra("url", article.getUrl())
+                    startActivity(intent)
+
+                }
                 // お気に入りボタンのクリックイベント
                 favoriteButton.setOnClickListener {
                     // ここでお気に入り処理を追加
+                    println("favorite")
                 }
 
                 return view
