@@ -1,6 +1,7 @@
 package com.example.salistapp
 
 import android.os.Bundle
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
+import com.google.android.material.navigation.NavigationView
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -21,11 +25,14 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
     private lateinit var listView: ListView
     private var articles = ArrayList<Article>()
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -34,6 +41,34 @@ class MainActivity : AppCompatActivity() {
         }
 
         listView = findViewById(R.id.list_view)
+
+        // ここからナビゲーションメニューの設定を追加
+        val drawerLayout: DrawerLayout = findViewById(R.id.main) // DrawerLayout の ID を取得
+        val navigationView: NavigationView = findViewById(R.id.nav_view) // NavigationView の ID を取得
+
+        // ActionBarDrawerToggle を設定
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, findViewById(R.id.toolbar),
+            R.string.open_drawer, R.string.close_drawer
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        // NavigationView のメニュー項目クリックイベント
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> println("ホームが選択されました")
+                R.id.nav_favorite -> {
+                    println("お気に入りが選択されました")
+                    startActivity(Intent(this, FavoriteActivity::class.java)) // お気に入りページ
+                }
+                R.id.nav_log -> {
+                    startActivity(Intent(this, HistoryActivity::class.java)) // 履歴ページ
+                }
+            }
+            drawerLayout.closeDrawers()
+            true
+        }
     }
 
     override fun onStart() {
@@ -55,8 +90,13 @@ class MainActivity : AppCompatActivity() {
                 val titleView: TextView = view.findViewById(R.id.article_title)
                 val favoriteButton: ImageButton = view.findViewById(R.id.favorite_button)
 
-                // アイコンを設定（仮にアイコン無しとしている）
-                iconView.setImageResource(R.drawable.ic_launcher_foreground)
+                // アイコンを設定
+                val iconResId = when (article.getMedia()) {
+                    "Qiita" -> R.drawable.qiita_icon // Qiita用アイコン
+                    "Zenn" -> R.drawable.zenn_icon   // Zenn用アイコン
+                    else -> R.drawable.zenn_icon  // デフォルトアイコン
+                }
+                iconView.setImageResource(iconResId)
 
                 mediaView.text = article.getMedia()
                 titleView.text = article.getTitle()
