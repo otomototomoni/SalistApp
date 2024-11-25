@@ -69,13 +69,14 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawers()
             true
         }
+
+        articles.clear()
+        fetchQiitaArticle("")
+        fetchZennArticle("")
     }
 
     override fun onStart() {
         super.onStart()
-        articles.clear()
-        fetchQiitaArticle("")
-        fetchZennArticle("")
     }
 
     fun updateArticleList() {
@@ -158,6 +159,8 @@ class MainActivity : AppCompatActivity() {
                         articles.add(article)
                     }
                 }
+
+                articles.shuffle()
                 updateArticleList()
             } else {
                 println("No response received")
