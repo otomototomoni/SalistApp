@@ -2,10 +2,14 @@ package com.example.salistapp
 
 import android.os.Bundle
 import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ListView
@@ -69,6 +73,38 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawers()
             true
         }
+
+        //検索機能----------------------------------------------------------------------------
+
+        //EditText　検索ボタンの取得
+        val searchEditText = findViewById<EditText>(R.id.search_bar)
+
+        //EditTextが変更されたかどうかを監視する。
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val searchText = s.toString()
+
+                //一致するTitle、URL、Mediaを取得して filteredArticlesにリストとして（？）格納
+                val filteredArticles = articles.filter { article ->
+                    article.getTitle().contains(searchText, ignoreCase = true) ||
+                            article.getUrl().contains(searchText, ignoreCase = true) ||
+                                    article.getMedia().contains(searchText, ignoreCase = true)
+                }
+
+                //デバッグ用のログ
+                Log.d("FilteredArticles", filteredArticles.toString())
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        }
+        )
+
+        //検索機能終わり--------------------------------------------------------------------------
 
         articles.clear()
         fetchQiitaArticle("")
