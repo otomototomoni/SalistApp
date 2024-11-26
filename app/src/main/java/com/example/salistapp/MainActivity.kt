@@ -79,30 +79,14 @@ class MainActivity : AppCompatActivity() {
         //EditText　検索ボタンの取得
         val searchEditText = findViewById<EditText>(R.id.search_bar)
 
-        //EditTextが変更されたかどうかを監視する。
-        searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                val searchText = s.toString()
+        searchEditText.setOnEditorActionListener { _, actionId, event ->
+            val searchText = searchEditText.text.toString()
+            articles.clear()
+            fetchQiitaArticle(searchText)
+            fetchZennArticle(searchText)
 
-                //一致するTitle、URL、Mediaを取得して filteredArticlesにリストとして（？）格納
-                val filteredArticles = articles.filter { article ->
-                    article.getTitle().contains(searchText, ignoreCase = true) ||
-                            article.getUrl().contains(searchText, ignoreCase = true) ||
-                                    article.getMedia().contains(searchText, ignoreCase = true)
-                }
-
-                //デバッグ用のログ
-                Log.d("FilteredArticles", filteredArticles.toString())
-
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
+            return@setOnEditorActionListener true
         }
-        )
 
         //検索機能終わり--------------------------------------------------------------------------
 
