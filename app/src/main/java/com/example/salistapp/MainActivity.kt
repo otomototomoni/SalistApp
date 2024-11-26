@@ -2,9 +2,6 @@ package com.example.salistapp
 
 import android.os.Bundle
 import android.content.Intent
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,8 +26,6 @@ import java.io.IOException
 class MainActivity : AppCompatActivity() {
     private lateinit var listView: ListView
     private var articles = ArrayList<Article>()
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navigationView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,11 +90,7 @@ class MainActivity : AppCompatActivity() {
         fetchZennArticle("")
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
-    fun updateArticleList() {
+    private fun updateArticleList() {
         val adapter = object : ArrayAdapter<Article>(this, R.layout.item_article, articles) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val article = getItem(position)!!
@@ -144,17 +135,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun fetchQiitaArticle(keyword: String = "") {
+    private fun fetchQiitaArticle(keyword: String = "") {
         val apiURL = if (keyword.isNotEmpty()) "https://qiita.com/api/v2/items?query=$keyword" else "https://qiita.com/api/v2/items"
         fetchArticle(apiURL)
     }
 
-    fun fetchZennArticle(keyword: String = "") {
+    private fun fetchZennArticle(keyword: String = "") {
         val apiURL = if (keyword.isNotEmpty()) "https://zenn.dev/api/search?source=articles&q=$keyword" else "https://zenn.dev/api/articles"
         fetchArticle(apiURL)
     }
 
-    fun fetchArticle(url: String) {
+    private fun fetchArticle(url: String) {
         val apiClient = ApiClient()
         apiClient.sendGetRequest(url) { response, error ->
             if (response != null) {
