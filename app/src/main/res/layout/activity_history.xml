@@ -1,0 +1,77 @@
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- メインコンテンツ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Toolbarの追加 -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:title="履歴一覧"
+            android:titleTextColor="@android:color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:navigationIcon="@drawable/baseline_density_medium_24" />
+
+        <!-- 履歴一覧のタイトル -->
+        <TextView
+            android:id="@+id/history_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="履歴一覧"
+            android:textSize="32sp"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:layout_marginTop="16dp" />
+
+        <!-- 履歴の件数表示 -->
+        <TextView
+            android:id="@+id/history_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0件"
+            android:textSize="32sp"
+            android:textColor="@android:color/darker_gray"
+            android:gravity="center"
+            android:layout_marginTop="8dp" />
+
+        <!-- 履歴を表示するListView -->
+        <ListView
+            android:id="@+id/history_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:dividerHeight="1dp"
+            android:divider="@android:color/darker_gray"
+            android:layout_marginTop="16dp" />
+
+        <!-- 広告の欄 -->
+        <TextView
+            android:id="@+id/ad_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="50dp"
+            android:background="@android:color/darker_gray"
+            android:text="広告募集中"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+
+    <!-- ナビゲーションメニュー -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/drawer_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
