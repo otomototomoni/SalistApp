@@ -14,36 +14,53 @@
         android:background="@android:color/white">
 
         <!-- Toolbarの追加 -->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:navigationIcon="@drawable/baseline_density_medium_24" />
 
         <!-- 検索バー -->
+
+
+        <!-- ListViewを追加 -->
+
         <EditText
             android:id="@+id/search_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="キーワードを入力"
-            android:padding="16dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/round_corner"
-            android:inputType="text"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="16dp"
             android:drawableLeft="@drawable/baseline_search_24"
-            android:drawableRight="@drawable/baseline_clear_24"
-            android:drawablePadding="16dp"/>
+            android:drawablePadding="16dp"
+            android:hint="キーワードを入力"
+            android:inputType="text"
+            android:padding="16dp"
+            android:textColor="#222"
+            android:textColorHint="#888"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
+        <ImageView
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/baseline_clear_24"
+            app:layout_constraintBottom_toBottomOf="@+id/search_bar"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintTop_toTopOf="@+id/search_bar" />
 
+        <androidx.appcompat.widget.Toolbar
+            app:title="@string/app_name"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/baseline_density_medium_24"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <!-- ListViewを追加 -->
         <ListView
             android:id="@+id/list_view"
             android:layout_width="match_parent"

@@ -84,6 +84,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         //検索機能終わり--------------------------------------------------------------------------
+        val clearButton = findViewById<ImageView>(R.id.clear)
+        clearButton.setOnClickListener {
+            searchEditText.setText("")
+            articles.clear()
+            fetchQiitaArticle("")
+            fetchZennArticle("")
+        }
 
         articles.clear()
         fetchQiitaArticle("")
